@@ -1,6 +1,7 @@
 const http = require('http');
 const app = require('./app');
 const initSocket = require('./socket');
+const { connectDB, sequelize } = require('./db');
 
 const PORT = process.env.PORT || 3000;
 let server;
@@ -13,9 +14,6 @@ module.exports = (req, res) => {
 
     server = http.createServer(app);
     io = initSocket(server);
-    app.use('/api/abc', (req, res) => {
-      return res.status(200).json({ message: "it's come from app/inde.js" });
-    });
     app.set('io', io);
   }
 
@@ -24,4 +22,8 @@ module.exports = (req, res) => {
   });
 
   server.emit('request', req, res);
+
+  connectDB().then(async () => {
+    await sequelize.sync({ alter: true });
+  });
 };

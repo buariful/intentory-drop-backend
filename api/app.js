@@ -10,6 +10,7 @@ app.get('/api/health', (_, res) => {
   res.json({ status: 'ok' });
 });
 
-app.use('/api/drops', require('./routes/drops'));
+app.use('/api/drops', require('./routes/dropRoute'));
+app.use('/api/auth', require('./routes/authRoute'));
 
 module.exports = app;

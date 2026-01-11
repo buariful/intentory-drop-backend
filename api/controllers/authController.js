@@ -4,17 +4,15 @@ const User = require('../models/User');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt');
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
-const Responsehandler = require('../utils/ResponseHandler');
+const ResponseHandler = require('../utils/ResponseHandler');
 
-const { SendError, SendSuccess } = Responsehandler;
+const { SendErrorResponse, SendSuccessResponse } = ResponseHandler;
 
 const signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'Username, email, and password are required' });
+      return SendErrorResponse({ res, message: 'Username, email, and password are required' });
     }
 
     const existing = await User.findOne({
@@ -30,7 +28,7 @@ const signup = async (req, res) => {
       if (existing.email?.toLowerCase() === email?.toLowerCase()) message = 'Email already exists';
       if (existing.username?.toLowerCase() === username?.toLowerCase())
         message = 'Username already exists';
-      return res.status(400).json({ success: false, message });
+      return SendErrorResponse({ res, message });
     }
 
     const user = await User.create({ username, email, password });
@@ -38,10 +36,14 @@ const signup = async (req, res) => {
     const refreshToken = generateRefreshToken(user);
     await user.update({ refreshToken });
 
-    res.json({ user: { id: user.id, username: user.username }, accessToken, refreshToken });
+    return SendSuccessResponse({
+      res,
+      message: 'User created successfully',
+      data: { user: { id: user.id, username: user.username }, accessToken, refreshToken },
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: 'Server error' });
+    return SendErrorResponse({ res, message: 'Server error' });
   }
 };
 
@@ -50,27 +52,28 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return SendError({ res, message: 'Email and password are required' });
+      return SendErrorResponse({ res, message: 'Email and password are required' });
     }
 
     const user = await User.findOne({ where: { email: { [Op.iLike]: email } } });
-    if (!user) return SendError({ res, message: 'Invalid credentials' });
+    if (!user) return SendErrorResponse({ res, message: 'Invalid credentials' });
 
     const valid = await user.validatePassword(password);
-    if (!valid) return SendError({ res, message: 'Invalid credentials', data: { valid, user } });
+    if (!valid)
+      return SendErrorResponse({ res, message: 'Invalid credentials', data: { valid, user } });
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
     await user.update({ refreshToken });
 
-    return SendSuccess({
+    return SendSuccessResponse({
       res,
       message: 'Login successful',
       data: { user: { id: user.id, username: user.username }, accessToken, refreshToken },
     });
   } catch (err) {
     console.error(err);
-    SendError({ res, message: 'Server error' });
+    SendErrorResponse({ res, message: 'Server error' });
   }
 };
 

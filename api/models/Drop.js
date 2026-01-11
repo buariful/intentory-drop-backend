@@ -15,6 +15,10 @@ Drop.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
 
     price: {
       // type: DataTypes.FLOAT(11, 3),
@@ -32,6 +36,11 @@ Drop.init(
       allowNull: false,
     },
 
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: 'https://www.merkis.com.bd/wp-content/uploads/2023/05/743.20-02.jpg',
+    },
     startsAt: {
       type: DataTypes.DATE,
       allowNull: false,

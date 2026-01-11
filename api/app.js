@@ -3,27 +3,35 @@ const cors = require('cors');
 const globalErrorHandler = require('./middlewares/globalErrorHandler');
 
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const allowedOrigins = [
   'https://sneaker-drop-frontend-gscv0uag8.vercel.app',
   'http://localhost:5173',
 ];
 
-app.use(cors({ origin: 'https://sneaker-drop-frontend-gscv0uag8.vercel.app' }));
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (!origin) return callback(null, true); // allow Postman / server-side calls
-//       if (allowedOrigins.includes(origin)) {
-//         return callback(null, true);
-//       } else {
-//         return callback(new Error('Not allowed by CORS'));
-//       }
-//     },
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) {
+        // Allow requests from Postman / server-side scripts
+        return callback(null, true);
+      }
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+  })
+);
 
-app.use(express.json());
+app.use((req, res, next) => {
+  console.log('***REQUEST ORIGIN****', req.headers.origin);
+  next();
+});
 
 app.get('/api/health', (_, res) => {
   res.json({ status: 'ok' });

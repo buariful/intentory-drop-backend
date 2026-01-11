@@ -2,6 +2,7 @@ const http = require('http');
 const app = require('./app');
 const initSocket = require('./socket');
 const { connectDB, sequelize } = require('./db');
+require('./models');
 
 const PORT = process.env.PORT || 3000;
 let server;

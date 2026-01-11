@@ -4,7 +4,7 @@ const http = require('http');
 const app = require('./api/app');
 const initSocket = require('./api/socket');
 const { connectDB, sequelize } = require('./api/db');
-const authRoutes = require('./api/routes/authRoute');
+require('./api/models');
 
 const PORT = process.env.PORT || 4000;
 

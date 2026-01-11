@@ -22,7 +22,8 @@ Purchase.init(
     },
 
     pricePaid: {
-      type: DataTypes.INTEGER,
+      // type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
   },

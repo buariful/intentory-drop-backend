@@ -1,8 +1,6 @@
 const { Op } = require('sequelize');
 const { sequelize } = require('../db');
-const Drop = require('../models/Drop');
-const Purchase = require('../models/Purchase');
-const Reservation = require('../models/Reservation');
+const { Drop, Reservation, Purchase, User } = require('../models');
 const ResponseHandler = require('../utils/ResponseHandler');
 
 const { SendSuccessResponse, SendErrorResponse } = ResponseHandler;
@@ -14,17 +12,71 @@ const getDropList = async (req, res) => {
     const offset = (page - 1) * limit;
 
     const { rows, count } = await Drop.findAndCountAll({
-      where: { isActive: true, startsAt: { [Op.gte]: new Date() } },
+      where: {
+        isActive: true,
+        startsAt: { [Op.gte]: new Date() },
+      },
+      include: [
+        {
+          model: Reservation,
+          as: 'reservations',
+          where: {
+            userId: req.user.id,
+            status: 'ACTIVE',
+            expiresAt: { [Op.gt]: new Date() },
+          },
+          required: false,
+        },
+        {
+          model: Purchase,
+          as: 'purchases',
+          required: false,
+          separate: true,
+          limit: 3,
+          order: [['createdAt', 'DESC']],
+          attributes: ['id', 'userId', 'dropId'], // ✅ need these for joins/mapping
+          include: [
+            {
+              model: User,
+              as: 'user',
+              attributes: ['username'], // ✅ ONLY username
+            },
+          ],
+        },
+      ],
       order: [['startsAt', 'DESC']],
       limit,
       offset,
+    });
+
+    // Map to keep frontend compatible
+    const listWithReservations = rows.map((drop) => {
+      const dropJson = drop.toJSON();
+
+      // Handle activeReservation
+      const activeReservation =
+        dropJson.reservations && dropJson.reservations.length > 0 ? dropJson.reservations[0] : null;
+      delete dropJson.reservations;
+
+      // Handle recentPurchasers
+      const recentPurchasers = (dropJson.purchases || []).map((p) => ({
+        id: p.userId,
+        username: p.user ? p.user.username : 'Unknown',
+      }));
+      delete dropJson.purchases;
+
+      return {
+        ...dropJson,
+        activeReservation,
+        recentPurchasers,
+      };
     });
 
     return SendSuccessResponse({
       res,
       message: 'Drops fetched successfully',
       data: {
-        list: rows,
+        list: listWithReservations,
         meta: {
           page,
           limit,

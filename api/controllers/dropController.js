@@ -142,7 +142,8 @@ const reserveDrop = async (req, res) => {
       await drop.save({ transaction: t });
 
       // reserve the item
-      const expiresAt = new Date(Date.now() + 60 * 1000);
+      // const expiresAt = new Date(Date.now() + 60 * 1000);
+      const expiresAt = new Date(Date.now() + 15 * 1000);
       const reservation = await Reservation.create(
         {
           userId,

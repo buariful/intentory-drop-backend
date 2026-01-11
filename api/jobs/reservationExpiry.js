@@ -13,6 +13,7 @@ const initReservationExpiryJob = (io) => {
   cron.schedule('* * * * *', async () => {
     console.log(`******* CRONJOB STARTED AT ${new Date().toLocaleString()} *******`);
     try {
+      console.log(`******* CRONJOB 22222 *******`);
       const expiredReservations = await Reservation.findAll({
         where: {
           status: 'ACTIVE',

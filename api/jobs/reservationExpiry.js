@@ -22,6 +22,9 @@ const initReservationExpiryJob = (io) => {
 
       if (expiredReservations.length === 0) return;
 
+      console.log('******** EXPIRED RESERVATION *************');
+      console.log(expiredReservations);
+
       for (const reservation of expiredReservations) {
         await sequelize.transaction(async (t) => {
           // Double check status within transaction to avoid race conditions

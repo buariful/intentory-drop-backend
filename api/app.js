@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const allowedOrigins = [
-  'https://sneaker-drop-frontend-gscv0uag8.vercel.app',
+  'https://sneaker-drop-frontend-ppyko9wk4.vercel.app',
   'http://localhost:5173',
 ];
 

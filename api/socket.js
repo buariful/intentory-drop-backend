@@ -4,7 +4,7 @@ module.exports = function initSocket(server) {
   const io = new Server(server, {
     path: '/api/socket',
     cors: {
-      origin: ['https://sneaker-drop-frontend-gscv0uag8.vercel.app', 'http://localhost:5173'],
+      origin: '*',
     },
   });
 

@@ -14,9 +14,20 @@ const io = initSocket(server);
 app.set('io', io);
 
 server.listen(PORT, () => {
-  console.log(`🔥 Local server running at http://localhost:${PORT}`);
+  console.log(`Local server running at http://localhost:${PORT}`);
 });
 
 connectDB().then(async () => {
   await sequelize.sync({ alter: true });
+});
+
+// Catch unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('💥 UNHANDLED REJECTION:', reason);
+});
+
+// Catch uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('💥 UNCAUGHT EXCEPTION:', err);
+  process.exit(1);
 });

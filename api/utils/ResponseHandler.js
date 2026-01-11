@@ -2,7 +2,7 @@ const SendSuccessResponse = ({ res, message = 'Success', data = null, status = 2
   return res.status(status).json({ success: true, message, data });
 };
 
-const SendErrorResponse = ({ res, message = 'Error', data = null, status = 200 }) => {
+const SendErrorResponse = ({ res, message = 'Error', data = null, status = 400 }) => {
   return res.status(status).json({ success: false, message, data });
 };
 

@@ -17,7 +17,8 @@ Drop.init(
     },
 
     price: {
-      type: DataTypes.FLOAT(11, 3),
+      // type: DataTypes.FLOAT(11, 3),
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
 

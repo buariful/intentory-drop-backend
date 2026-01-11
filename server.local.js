@@ -5,6 +5,7 @@ const app = require('./api/app');
 const initSocket = require('./api/socket');
 const { connectDB, sequelize } = require('./api/db');
 require('./api/models');
+const { initReservationExpiryJob } = require('./api/jobs/reservationExpiry');
 
 const PORT = process.env.PORT || 4000;
 
@@ -12,6 +13,9 @@ const server = http.createServer(app);
 const io = initSocket(server);
 
 app.set('io', io);
+
+// Initialize background jobs
+initReservationExpiryJob(io);
 
 server.listen(PORT, () => {
   console.log(`Local server running at http://localhost:${PORT}`);

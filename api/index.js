@@ -4,7 +4,9 @@ const initSocket = require('./socket');
 const { connectDB, sequelize } = require('./db');
 require('./models');
 
-const PORT = process.env.PORT || 3000;
+const { initReservationExpiryJob } = require('./jobs/reservationExpiry');
+
+const PORT = process.env.PORT || 4000;
 let server;
 let io;
 
@@ -16,6 +18,9 @@ module.exports = (req, res) => {
     server = http.createServer(app);
     io = initSocket(server);
     app.set('io', io);
+
+    // Initialize background jobs
+    initReservationExpiryJob(io);
   }
 
   server.listen(PORT, () => {

@@ -14,7 +14,7 @@ const getDropList = async (req, res) => {
     const { rows, count } = await Drop.findAndCountAll({
       where: {
         isActive: true,
-        // startsAt: { [Op.gte]: new Date() },
+        startsAt: { [Op.lte]: new Date() },
       },
       include: [
         {

@@ -60,6 +60,7 @@ The server will be running at `http://localhost:4000`.
 ## API Endpoints
 
 ### Authentication
+- `POST /api/drops` - Insert a new drop
 - `POST /api/auth/signup` - Register a new account
 - `POST /api/auth/login` - Login to an existing account
 - `POST /api/auth/logout` - Logout and invalidate session

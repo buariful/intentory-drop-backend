@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node server.local.js",
     "dev": "nodemon server.local.js",
     "lint": "eslint .",
     "format": "prettier --write ."

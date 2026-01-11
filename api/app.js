@@ -4,7 +4,12 @@ const globalErrorHandler = require('./middlewares/globalErrorHandler');
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: '*', // allow all
+    credentials: false,
+  })
+);
 app.use(express.json());
 
 app.get('/api/health', (_, res) => {

@@ -24,7 +24,7 @@ module.exports = (req, res) => {
   }
 
   server.listen(PORT, () => {
-    console.log(`Local server running at http://localhost:${PORT}`);
+    console.log(`Local server running at PORT:${PORT}`);
   });
 
   server.emit('request', req, res);

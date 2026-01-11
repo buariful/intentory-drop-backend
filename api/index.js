@@ -11,7 +11,7 @@ let server;
 let io;
 
 module.exports = (req, res) => {
-  console.log('🔥 Initializing server');
+  console.log(' Initializing server from index.js');
   if (!server) {
     console.log('🔥 Initializing server');
 
